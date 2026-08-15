@@ -1,0 +1,43 @@
+name: Validate templates
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate scaffold script
+        run: python3 -m py_compile scripts/new_app.py
+
+      - name: Generate minimal starter
+        run: |
+          python3 scripts/new_app.py --type minimal --name sample-minimal --title "Sample Minimal" --output /tmp/sample-minimal
+          node --check /tmp/sample-minimal/app.js
+          test -s /tmp/sample-minimal/PRODUCT.md
+          ! grep -R "{{APP_" /tmp/sample-minimal --exclude-dir=.git
+
+      - name: Generate and build interactive starter
+        run: |
+          python3 scripts/new_app.py --type interactive --name sample-interactive --title "Sample Interactive" --output /tmp/sample-interactive
+          cd /tmp/sample-interactive
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm run build
+          ! grep -R "{{APP_" . --exclude-dir=node_modules --exclude-dir=dist
+
+      - name: Generate and build content-data starter
+        run: |
+          python3 scripts/new_app.py --type content-data --name sample-content --title "Sample Content" --output /tmp/sample-content
+          cd /tmp/sample-content
+          npm install --no-audit --no-fund
+          npm run check
+          npm run build
+          ! grep -R "{{APP_" . --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.astro
