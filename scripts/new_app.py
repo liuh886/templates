@@ -54,8 +54,11 @@ def main() -> None:
     args = parser.parse_args()
 
     output = args.output.expanduser().resolve()
-    if output.exists() and any(output.iterdir()):
-        raise SystemExit(f"Refusing to modify non-empty directory: {output}")
+    if output.exists():
+        if not output.is_dir():
+            raise SystemExit(f"Refusing to overwrite non-directory path: {output}")
+        if any(output.iterdir()):
+            raise SystemExit(f"Refusing to modify non-empty directory: {output}")
 
     output.mkdir(parents=True, exist_ok=True)
     copy_tree(ROOT / "common", output)
