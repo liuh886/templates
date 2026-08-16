@@ -90,11 +90,15 @@ If identity exists, also cover signed-out, signed-in and entitlement states.
 
 Do not invent states the product does not have.
 
+For every public web app, also establish the default Cloudflare Web Analytics baseline. Read `references/shared-services.md` and choose exactly one path: Cloudflare automatic injection for proxied/Pages deployments, or the template's `CLOUDFLARE_WEB_ANALYTICS_TOKEN` deployment injection for GitHub Pages/DNS-only deployments. Analytics must not alter visible product design or block the core loop.
+
 ## 6. Shared capabilities are referenced, not copied
 
 Read `references/shared-services.md` before adding identity, billing, analytics, persistence or backend capabilities.
 
 `liuh886/admin` is the canonical Hao Apps identity/membership/billing control plane. Product repositories must not copy its checkout, portal, webhook, entitlement or account backend.
+
+Cloudflare Web Analytics is the default traffic/performance baseline for public web apps. It remains external observability, not product state. Do not create Supabase tables or Edge Functions for it.
 
 Add an account only when the core loop needs identity, cross-device state, paid entitlement, or an explicitly user-owned cloud record.
 
@@ -130,6 +134,8 @@ Unless the core loop proves they are required, v0.1 does **not** add:
 - generalized plugin/config framework;
 - speculative abstractions.
 
+Cloudflare Web Analytics is the exception because it is external, low-coupling release observability rather than product architecture.
+
 ## 9. Delete superseded paths
 
 There is no backwards-compatibility layer in this product-building method.
@@ -150,7 +156,8 @@ At minimum:
 - refresh/direct entry/error behavior is intentional;
 - no fake precision, status or claims are shown;
 - checks + build + one durable browser smoke pass;
-- deployed behavior can be observed with the agreed analytics surface.
+- a public web app has exactly one Cloudflare Web Analytics installation path active;
+- deployed behavior can be observed without introducing a second product-state authority.
 
 Do not continue adding features merely to make the project look larger.
 
@@ -169,8 +176,9 @@ The script only copies `common/` and the selected `starters/<type>/` and replace
 3. remove unused starter code rather than preserving it;
 4. install dependencies only for the chosen starter and commit its lockfile;
 5. write the real browser smoke for the core loop;
-6. run the quality baseline;
-7. deploy.
+6. configure exactly one Cloudflare Web Analytics path for public deployment;
+7. run the quality baseline;
+8. deploy.
 
 ## 12. Final review question
 

@@ -22,6 +22,9 @@ jobs:
           python3 scripts/new_app.py --type minimal --name sample-minimal --title "Sample Minimal" --output /tmp/sample-minimal
           node --check /tmp/sample-minimal/app.js
           test -s /tmp/sample-minimal/PRODUCT.md
+          CLOUDFLARE_WEB_ANALYTICS_TOKEN=test-token node /tmp/sample-minimal/scripts/inject-cloudflare-web-analytics.mjs /tmp/sample-minimal
+          CLOUDFLARE_WEB_ANALYTICS_TOKEN=test-token node /tmp/sample-minimal/scripts/inject-cloudflare-web-analytics.mjs /tmp/sample-minimal
+          test "$(grep -c 'static.cloudflareinsights.com/beacon.min.js' /tmp/sample-minimal/index.html)" -eq 1
           ! grep -R "{{APP_" /tmp/sample-minimal --exclude-dir=.git
 
       - name: Generate and build interactive starter
@@ -31,6 +34,8 @@ jobs:
           npm install --no-audit --no-fund
           npm run typecheck
           npm run build
+          CLOUDFLARE_WEB_ANALYTICS_TOKEN=test-token node scripts/inject-cloudflare-web-analytics.mjs dist
+          grep -R -q 'static.cloudflareinsights.com/beacon.min.js' dist
           ! grep -R "{{APP_" . --exclude-dir=node_modules --exclude-dir=dist
 
       - name: Generate and build content-data starter
@@ -40,4 +45,6 @@ jobs:
           npm install --no-audit --no-fund
           npm run check
           npm run build
+          CLOUDFLARE_WEB_ANALYTICS_TOKEN=test-token node scripts/inject-cloudflare-web-analytics.mjs dist
+          grep -R -q 'static.cloudflareinsights.com/beacon.min.js' dist
           ! grep -R "{{APP_" . --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.astro

@@ -45,13 +45,18 @@ This is the default Definition of Done for a new Hao app. It is deliberately sho
 
 ## 7. Operations
 
-For a public product, it should be possible to answer:
+For a public web product:
 
-- Did anyone open it?
+- Cloudflare Web Analytics is enabled through exactly one path: Cloudflare automatic injection or the template's manual deployment injection.
+- Analytics does not change the visible product surface or block the core loop.
+- It is possible to answer whether anyone opened the product and whether client-side performance materially regressed.
+
+For products with explicit outcome events, it should also be possible to answer:
+
 - Did users start/complete the core action?
 - Did a material runtime failure occur?
 
-Do not add an analytics event for every click.
+Do not add an analytics event for every click. Do not introduce Supabase only to support analytics.
 
 ## Ship rule
 
