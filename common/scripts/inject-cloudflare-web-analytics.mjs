@@ -22,7 +22,7 @@ if (!token) {
 
 const beaconSrc = "https://static.cloudflareinsights.com/beacon.min.js";
 const beaconConfig = JSON.stringify({ token }).replaceAll("'", "&#39;");
-const snippet = `<script defer src="${beaconSrc}" data-cf-beacon='${beaconConfig}'></script>`;
+const snippet = `<script type="module" src="${beaconSrc}" data-cf-beacon='${beaconConfig}'></script>`;
 
 function collectHtmlFiles(directory) {
   const files = [];
